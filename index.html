@@ -44,7 +44,7 @@
       <thead>
         <tr>
           <th>Numeros Aleatorios</th>
-          <th>Columna 2</th>
+          <th>Procesado</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -72,20 +72,19 @@
               }
             }
             console.log(valor_recortado);
+            jsonData.push({
+              numero_aleatorio: valor,
+              numero_procesado: valor_recortado,
+            });
           }
         }
-
-        var jsonData = [
-          { userID: "1", userName: "name1" },
-          { userID: "2", userName: "name2" },
-          { userID: "3", userName: "name3" },
-        ];
 
         $("#tablaPoker").DataTable({
           paging: false,
           bInfo: false,
+          ordering: false,
           data: jsonData,
-          columns: [{ data: "userID" }, { data: "userName" }],
+          columns: [{ data: "numero_aleatorio" }, { data: "numero_procesado" }],
         });
       };
     </script>
