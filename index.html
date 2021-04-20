@@ -9,18 +9,14 @@
       rel="stylesheet"
       href="http:////cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"
     />
-
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
     />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https:////cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
 
     <style>
@@ -32,7 +28,7 @@
   <body class="h-100">
     <div class="row h-100 m-3">
       <div class="col-2">
-        <div class="row" style="min-height: 350px">
+        <div class="row" style="min-height: 400px">
           <textarea id="numeros_aleatorios" class="min-vh-50">
             0.06141
             0.81792
@@ -68,7 +64,9 @@
         </div>
 
         <div class="row mt-3">
-          <button class="btn btn-primary" onclick="procesar()">run</button>
+          <button class="btn btn-primary" onclick="ejecutarPrueba()">
+            Ejecutar
+          </button>
         </div>
       </div>
 
@@ -93,10 +91,10 @@
           <div class="card-body">
             <table class="table">
               <tr>
-                <td>Total Categorias:</td>
-                <td>Frecuencia Observada:</td>
-                <td>Frecuencia Esperada:</td>
-                <td>Ji Poker:</td>
+                <td><b>Total Categorias:</b></td>
+                <td><b>Frecuencia Observada:</b></td>
+                <td><b>Frecuencia Esperada:</b></td>
+                <td><b>Ji Poker:</b></td>
               </tr>
               <tr>
                 <td><span id="tc"></span></td>
@@ -112,15 +110,15 @@
           <div class="card-body">
             <table class="table">
               <tr>
-                <td>Ji- Póker:</td>
+                <td><b>Ji- Póker:</b></td>
                 <td><span id="ji_poker"></span></td>
               </tr>
               <tr>
-                <td>Ji- Alpha:</td>
+                <td><b>Ji- Alpha:</b></td>
                 <td><span id="ji_alpha"></span></td>
               </tr>
               <tr>
-                <td>Desicion:</td>
+                <td><b>Desicion:</b></td>
                 <td><span id="desicion"></span></td>
               </tr>
             </table>
@@ -155,12 +153,20 @@
         "1Q": 0.0001,
       };
 
-      var span_nc = 0;
-      var span_fo = 0;
-      var span_fe = 0;
-      var span_ji = 0;
+      var categorias = {
+        TD: 0,
+        "1P": 0,
+        "2P": 0,
+        "1T": 0,
+        FULL: 0,
+        POKER: 0,
+        "1Q": 0,
+      };
 
-      var evaluar = function (numero) {
+      var total_fo = 0;
+      var total_fe = 0;
+
+      var procesarNumero = function (numero) {
         var valor_recortado = numero.substring(2, 7);
 
         if (valor_recortado.length < 5) {
@@ -215,7 +221,15 @@
           return { valor_procesado: valor_recortado, categoria: "1T" };
       };
 
-      var procesar = function () {
+      var ejecutarPrueba = function () {
+        // reset variables
+        for (const categoria in categorias) {
+          categorias[categoria] = 0;
+        }
+
+        total_fo = 0;
+        total_fe = 0;
+
         $("#contenido").show();
 
         var tablaNumeros = [];
@@ -225,16 +239,6 @@
 
         var lineas = $("#numeros_aleatorios").val().split("\n");
 
-        var categorias = {
-          TD: 0,
-          "1P": 0,
-          "2P": 0,
-          "1T": 0,
-          FULL: 0,
-          POKER: 0,
-          "1Q": 0,
-        };
-
         var total_numeros = 0;
 
         for (var i = 0; i < lineas.length; i++) {
@@ -242,7 +246,7 @@
           if (valor !== "") {
             total_numeros++;
 
-            var procesado = evaluar(valor);
+            var procesado = procesarNumero(valor);
 
             categorias[procesado.categoria] =
               categorias[procesado.categoria] + 1;
@@ -268,8 +272,8 @@
           });
 
           // totales
-          span_fe = parseFloat(span_fe) + parseFloat(fe);
-          span_ji = parseFloat(span_ji) + parseFloat(ji);
+          total_fe = parseFloat(total_fe) + parseFloat(fe);
+          total_fo = parseFloat(total_fo) + parseFloat(ji);
         }
 
         var ji_alpha = jStat.chisquare.inv(0.95, 6);
@@ -277,12 +281,12 @@
         // muestro los totales en pantalla
         $("#tc").text(7);
         $("#fo").text(total_numeros);
-        $("#fe").text(span_fe.toFixed(2));
-        $("#ji").text(span_ji.toFixed(7));
-        $("#ji_poker").text(span_ji.toFixed(7));
+        $("#fe").text(total_fe.toFixed(2));
+        $("#ji").text(total_fo.toFixed(7));
+        $("#ji_poker").text(total_fo.toFixed(7));
         $("#ji_alpha").text(ji_alpha.toFixed(8));
         $("#desicion").text(
-          span_ji < ji_alpha ? "Se rechaza la Ho." : "Se acepta la Ho."
+          total_fo < ji_alpha ? "Se rechaza la Ho." : "Se acepta la Ho."
         );
 
         $("#tablaPokerResumen").DataTable({
@@ -301,7 +305,6 @@
 
         $("#tablaPoker").DataTable({
           paging: false,
-          // bInfo: false,
           ordering: false,
           data: tablaNumeros,
           columns: [
