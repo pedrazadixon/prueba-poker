@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prueba Poker</title>
+    <link
+      rel="stylesheet"
+      href="http:////cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"
+    />
+    <script src="http:////code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="http:////cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+    <style>
+      body {
+        height: 90vh;
+        display: flex;
+      }
+
+      #tablaPoker {
+        width: 100%;
+      }
+
+      .dataTables_wrapper {
+        width: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="numeros_aleatorios" rows="6">
+        0.546548975
+        0
+        0.4865315
+        0.44
+        0.25486
+    </textarea>
+
+    <button onclick="procesar()">run</button>
+
+    <table id="tablaPoker">
+      <thead>
+        <tr>
+          <th>Numeros Aleatorios</th>
+          <th>Columna 2</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <script>
+      var procesar = function () {
+        var jsonData = [];
+
+        $("#tablaPoker").DataTable().destroy();
+
+        var lineas = $("#numeros_aleatorios").val().split("\n");
+        for (var i = 0; i < lineas.length; i++) {
+          var valor = lineas[i].trim();
+          if (valor !== "") {
+            console.log("antes", valor);
+
+            var valor_recortado = valor.substring(2, 7);
+
+            if (valor_recortado.length < 5) {
+              var ceros_faltantes = 5 - valor_recortado.length;
+              console.log("ceros_faltantes", ceros_faltantes);
+              for (let k = 1; k <= ceros_faltantes; k++) {
+                valor_recortado = valor_recortado + "0";
+              }
+            }
+            console.log(valor_recortado);
+          }
+        }
+
+        var jsonData = [
+          { userID: "1", userName: "name1" },
+          { userID: "2", userName: "name2" },
+          { userID: "3", userName: "name3" },
+        ];
+
+        $("#tablaPoker").DataTable({
+          paging: false,
+          bInfo: false,
+          data: jsonData,
+          columns: [{ data: "userID" }, { data: "userName" }],
+        });
+      };
+    </script>
+  </body>
+</html>
