@@ -52,7 +52,7 @@
 
     <script>
       var procesar = function () {
-        var jsonData = [];
+        var tableData = [];
 
         $("#tablaPoker").DataTable().destroy();
 
@@ -60,19 +60,16 @@
         for (var i = 0; i < lineas.length; i++) {
           var valor = lineas[i].trim();
           if (valor !== "") {
-            console.log("antes", valor);
-
             var valor_recortado = valor.substring(2, 7);
 
             if (valor_recortado.length < 5) {
               var ceros_faltantes = 5 - valor_recortado.length;
-              console.log("ceros_faltantes", ceros_faltantes);
               for (let k = 1; k <= ceros_faltantes; k++) {
                 valor_recortado = valor_recortado + "0";
               }
             }
-            console.log(valor_recortado);
-            jsonData.push({
+
+            tableData.push({
               numero_aleatorio: valor,
               numero_procesado: valor_recortado,
             });
@@ -83,7 +80,7 @@
           paging: false,
           bInfo: false,
           ordering: false,
-          data: jsonData,
+          data: tableData,
           columns: [{ data: "numero_aleatorio" }, { data: "numero_procesado" }],
         });
       };
