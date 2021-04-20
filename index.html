@@ -39,6 +39,7 @@
     </textarea>
 
     <button onclick="procesar()">run</button>
+    <button onclick="procesar2()">run2</button>
 
     <table id="tablaPoker">
       <thead>
@@ -51,6 +52,47 @@
     </table>
 
     <script>
+      var procesar2 = function () {
+        var test = "0.33221";
+
+        var evaluar = function (numero) {
+          var valor_recortado = numero.substring(2, 7);
+
+          var conteos = {};
+
+          for (let i = 0; i < valor_recortado.length; i++) {
+            var es_td = false;
+            var es_2p = false;
+            var es_1p = false;
+            var es_1t = false;
+            var es_1q = false; // 5 iguales
+            var es_full = false; // 1 tercio + 1 par
+            var es_poker = false; // 4 iguales
+
+            const element = valor_recortado[i];
+
+            conteos[valor_recortado[i]] =
+              valor_recortado.split(valor_recortado[i]).length - 1;
+          }
+
+          console.log(conteos);
+
+          var perrito = Object.values(conteos);
+
+          if (perrito.includes(3) && perrito.includes(2)) {
+            console.log("es_full");
+          }
+
+          if (perrito.includes(5)) {
+            console.log("es_1q");
+          }
+
+
+        };
+
+        evaluar(test);
+      };
+
       var procesar = function () {
         var tableData = [];
 
